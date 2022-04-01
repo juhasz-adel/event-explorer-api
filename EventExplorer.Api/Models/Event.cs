@@ -10,7 +10,7 @@ namespace EventExplorer.Api.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int MaximumHeadCount { get; set; }
+        public int EntranceFee { get; set; }
         public bool IsIndoor { get; set; }
-        public bool NeedCovidCertificate { get; set; }
     }
 }
