@@ -12,6 +12,9 @@ namespace EventExplorer.Api.Persistence.EntityConfigurations
                 .ToTable("attendances");
 
             builder
+                .HasKey(x => new {x.EventId, x.UserId});
+
+            builder
                 .Property(x => x.EventId)
                 .HasColumnName("event_id");
 
@@ -25,8 +28,6 @@ namespace EventExplorer.Api.Persistence.EntityConfigurations
                 .HasColumnName("is_pre_paid")
                 .IsRequired();
 
-            builder
-                .HasKey(x => new {x.EventId, x.UserId});
         }
     }
 }
