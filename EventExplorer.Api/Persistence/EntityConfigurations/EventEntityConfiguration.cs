@@ -16,14 +16,16 @@ namespace EventExplorer.Api.Persistence.EntityConfigurations
                 .HasColumnName("id");
 
             builder
-                .Property(x => x.Name)
-                .HasColumnName("name")
-                .HasMaxLength(255)
-                .IsRequired();
+                .Property(x => x.OrganizerId)
+                .HasColumnName("organizer_id");
 
             builder
-                .Property(x => x.Address)
-                .HasColumnName("address")
+                .Property(x => x.CategoryId)
+                .HasColumnName("category_id");
+
+            builder
+                .Property(x => x.Name)
+                .HasColumnName("name")
                 .HasMaxLength(255)
                 .IsRequired();
 
@@ -38,9 +40,8 @@ namespace EventExplorer.Api.Persistence.EntityConfigurations
                 .IsRequired();
 
             builder
-                .Property(x => x.MaximumHeadCount)
-                .HasColumnName("maximum_head_count")
-                .IsRequired();
+                .Property(x => x.LocationId)
+                .HasColumnName("location_id");
 
             builder
                 .Property(x => x.EntranceFee)
