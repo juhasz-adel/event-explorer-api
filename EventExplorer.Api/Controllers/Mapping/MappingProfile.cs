@@ -11,9 +11,11 @@ namespace EventExplorer.Api.Controllers.Mapping
         {
             // Model to response resource
             CreateMap<Category, CategoryResponseResource>();
+            CreateMap<Location, LocationResponseResource>();
 
             // Request resource to model
             CreateMap<CreateCategoryRequestResource, Category>();
+            CreateMap<CreateLocationRequestResource, Location>();
         }
     }
 }
