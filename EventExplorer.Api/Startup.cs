@@ -1,5 +1,6 @@
 using AutoMapper;
 using EventExplorer.Api.Persistence;
+using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ namespace EventExplorer.Api
             services.AddControllers();
 
             services.AddAutoMapper();
+
+            services.AddScoped<CategoryRepository>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySQL(_configuration.GetConnectionString("Local")));

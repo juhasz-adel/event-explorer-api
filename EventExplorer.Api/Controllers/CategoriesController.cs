@@ -2,10 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence;
+using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EventExplorer.Api.Controllers
 {
@@ -13,12 +12,15 @@ namespace EventExplorer.Api.Controllers
     [Route("/api/[controller]/")]
     public class CategoriesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoriesController(ApplicationDbContext context, IMapper mapper)
+        public CategoriesController(
+            CategoryRepository categoryRepository,
+            IMapper mapper
+            )
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
@@ -26,7 +28,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetCategories()
         {
             var categories =
-                _context.Categories.ToList();
+                _categoryRepository.GetCategories();
 
             var categoryResponseResources =
                 _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResponseResource>>(categories);
@@ -38,8 +40,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetCategory(int id)
         {
             var category =
-                _context.Categories
-                .SingleOrDefault(c => c.Id == id);
+                _categoryRepository.GetCategory(id);
 
             if (category == null)
             {
@@ -60,12 +61,14 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var category = _mapper.Map<CreateCategoryRequestResource, Category>(request);
+            var category =
+                _mapper.Map<CreateCategoryRequestResource, Category>(request);
 
-            _context.Categories.Add(category);
-            _context.SaveChanges();
+            category =
+                _categoryRepository.Add(category);
 
-            var categoryResponseResource = _mapper.Map<Category, CategoryResponseResource>(category);
+            var categoryResponseResource =
+                _mapper.Map<Category, CategoryResponseResource>(category);
 
             return Ok(categoryResponseResource);
         }
