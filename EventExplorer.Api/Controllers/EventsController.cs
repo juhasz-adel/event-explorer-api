@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
@@ -58,6 +59,30 @@ namespace EventExplorer.Api.Controllers
 
             var eventResponseResource =
                 _mapper.Map<Event, EventResponseResource>(@event);
+
+            return Ok(eventResponseResource);
+        }
+
+        [HttpPost]
+        public IActionResult CreateEvent([FromBody] CreateEventRequestResource request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var @event = _mapper.Map<CreateEventRequestResource, Event>(request);
+
+            _context.Events.Add(@event);
+            _context.SaveChanges();
+
+            @event = _context.Events
+                .Include(e => e.Organizer)
+                .Include(e => e.Category)
+                .Include(e => e.Location)
+                .SingleOrDefault(e => e.Id == @event.Id);
+
+            var eventResponseResource = _mapper.Map<Event, EventResponseResource>(@event);
 
             return Ok(eventResponseResource);
         }
