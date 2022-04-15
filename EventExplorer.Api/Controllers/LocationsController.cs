@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
@@ -47,7 +48,25 @@ namespace EventExplorer.Api.Controllers
             }
 
             var locationResponseResource =
-                _mapper.Map<Location, CategoryResponseResource>(location);
+                _mapper.Map<Location, LocationResponseResource>(location);
+
+            return Ok(locationResponseResource);
+        }
+
+        [HttpPost]
+        public IActionResult CreateLocation([FromBody] CreateLocationRequestResource request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var location = _mapper.Map<CreateLocationRequestResource, Location>(request);
+
+            _context.Locations.Add(location);
+            _context.SaveChanges();
+
+            var locationResponseResource = _mapper.Map<Location, LocationResponseResource>(location);
 
             return Ok(locationResponseResource);
         }

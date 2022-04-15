@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
@@ -50,6 +51,24 @@ namespace EventExplorer.Api.Controllers
 
             var userResponseResource =
                 _mapper.Map<User, UserResponseResource>(user);
+
+            return Ok(userResponseResource);
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] CreateUserRequestResource request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _mapper.Map<CreateUserRequestResource, User>(request);
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            var userResponseResource = _mapper.Map<User, UserResponseResource>(user);
 
             return Ok(userResponseResource);
         }

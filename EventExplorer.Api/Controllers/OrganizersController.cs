@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
+using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventExplorer.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class OrganizersController : ControllerBase
     {
@@ -50,6 +48,24 @@ namespace EventExplorer.Api.Controllers
 
             var organizerResponseResource =
                 _mapper.Map<Organizer, CategoryResponseResource>(organizer);
+
+            return Ok(organizerResponseResource);
+        }
+
+        [HttpPost]
+        public IActionResult CreateOrganizer([FromBody] CreateOrganizerRequestResource request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var organizer = _mapper.Map<CreateOrganizerRequestResource, Organizer>(request);
+
+            _context.Organizers.Add(organizer);
+            _context.SaveChanges();
+
+            var organizerResponseResource = _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
 
             return Ok(organizerResponseResource);
         }

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,6 +48,24 @@ namespace EventExplorer.Api.Controllers
 
             var categoryResponseResource =
                 _mapper.Map<Category, CategoryResponseResource>(category);
+
+            return Ok(categoryResponseResource);
+        }
+
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody] CreateCategoryRequestResource request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var category = _mapper.Map<CreateCategoryRequestResource, Category>(request);
+
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+
+            var categoryResponseResource = _mapper.Map<Category, CategoryResponseResource>(category);
 
             return Ok(categoryResponseResource);
         }
