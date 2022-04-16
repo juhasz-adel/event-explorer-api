@@ -17,8 +17,9 @@ namespace EventExplorer.Api.Persistence.Repositories
         {
             return _context.Attendances
                 .Include(attendance => attendance.User)
-                .Include(attendance => attendance.Event)
-                .ThenInclude(@event => @event.Organizer)
+                .Include(attendance => attendance.Event.Organizer)
+                .Include(attendance => attendance.Event.Category)
+                .Include(attendance => attendance.Event.Location)
                 .SingleOrDefault(attendance => attendance.EventId == eventId &&
                     attendance.UserId == userId);
         }
