@@ -31,6 +31,7 @@ namespace EventExplorer.Api
             services.AddScoped<CategoryService>();
             services.AddScoped<EventService>();
             services.AddScoped<LocationService>();
+            services.AddScoped<OrganizerService>();
 
             services.AddScoped<CategoryRepository>();
             services.AddScoped<LocationRepository>();
