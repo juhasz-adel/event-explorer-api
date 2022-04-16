@@ -6,6 +6,7 @@ namespace EventExplorer.Api.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
+        public DbSet<Attendance> Attendances{ get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Location> Locations { get; set; }

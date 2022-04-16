@@ -17,6 +17,7 @@ namespace EventExplorer.Api.Controllers.Mapping
             CreateMap<User, UserResponseResource>();
 
             // Request resource to model
+            CreateMap<AttendanceRequestResource, Attendance>();
             CreateMap<CreateCategoryRequestResource, Category>();
             CreateMap<CreateEventRequestResource, Event>();
             CreateMap<CreateLocationRequestResource, Location>();
