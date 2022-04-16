@@ -27,10 +27,6 @@ namespace EventExplorer.Api.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.Property<bool>("IsPrePaid")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_pre_paid");
-
                     b.HasKey("EventId", "UserId");
 
                     b.HasIndex("UserId");

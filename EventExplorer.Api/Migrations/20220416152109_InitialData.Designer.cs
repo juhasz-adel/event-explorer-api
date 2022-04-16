@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventExplorer.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220401192748_InitialData")]
+    [Migration("20220416152109_InitialData")]
     partial class InitialData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,10 +28,6 @@ namespace EventExplorer.Api.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
-
-                    b.Property<bool>("IsPrePaid")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_pre_paid");
 
                     b.HasKey("EventId", "UserId");
 

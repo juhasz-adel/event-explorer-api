@@ -51,10 +51,10 @@ namespace EventExplorer.Api.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DELETE FROM categories WHERE ;");
-            migrationBuilder.Sql("DELETE FROM events WHERE ;");
-            migrationBuilder.Sql("DELETE FROM locations WHERE ;");
-            migrationBuilder.Sql("DELETE FROM organizers WHERE ;");
+            migrationBuilder.Sql("DELETE FROM events;");
+            migrationBuilder.Sql("DELETE FROM locations;");
+            migrationBuilder.Sql("DELETE FROM organizers;");
+            migrationBuilder.Sql("DELETE FROM categories;");
         }
     }
 }
