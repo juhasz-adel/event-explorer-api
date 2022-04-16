@@ -31,6 +31,7 @@ namespace EventExplorer.Api
             services.AddScoped<LocationRepository>();
             services.AddScoped<EventRepository>();
             services.AddScoped<OrganizerRepository>();
+            services.AddScoped<UserRepository>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySQL(_configuration.GetConnectionString("Local")));

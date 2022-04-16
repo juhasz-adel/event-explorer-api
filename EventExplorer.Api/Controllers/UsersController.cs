@@ -3,6 +3,7 @@ using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
+using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,12 +17,15 @@ namespace EventExplorer.Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UsersController(ApplicationDbContext context, IMapper mapper)
+        public UsersController(
+            UserRepository userRepository,
+            IMapper mapper
+            )
         {
-            _context = context;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -29,7 +33,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetUsers()
         {
             var users =
-                _context.Users.ToList();
+                _userRepository.GetUsers();
 
             var userResponseResources =
                 _mapper.Map<IEnumerable<User>, IEnumerable<UserResponseResource>>(users);
@@ -41,8 +45,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetUser(int id)
         {
             var user =
-                _context.Users
-                .SingleOrDefault(e => e.Id == id);
+                _userRepository.GetUser(id);
 
             if (user == null)
             {
@@ -63,12 +66,16 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = _mapper.Map<CreateUserRequestResource, User>(request);
+            var user =
+                _mapper.Map<CreateUserRequestResource, User>(request);
 
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            _userRepository.Add(user);
 
-            var userResponseResource = _mapper.Map<User, UserResponseResource>(user);
+            user =
+                _userRepository.GetUser(user.Id);
+
+            var userResponseResource =
+                _mapper.Map<User, UserResponseResource>(user);
 
             return Ok(userResponseResource);
         }
