@@ -17,18 +17,18 @@ namespace EventExplorer.Api.Persistence.Repositories
         public IEnumerable<Event> GetEvents()
         {
             return _context.Events
-                .Include(e => e.Organizer)
-                .Include(e => e.Category)
-                .Include(e => e.Location)
+                .Include(@event => @event.Organizer)
+                .Include(@event => @event.Category)
+                .Include(@event => @event.Location)
                 .ToList();
         }
 
         public Event GetEvent(int id)
         {
             return _context.Events
-                .Include(e => e.Organizer)
-                .Include(e => e.Category)
-                .Include(e => e.Location)
+                .Include(@event => @event.Organizer)
+                .Include(@event => @event.Category)
+                .Include(@event => @event.Location)
                 .SingleOrDefault(e => e.Id == id);
         }
 

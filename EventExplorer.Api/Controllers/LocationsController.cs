@@ -2,26 +2,25 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence;
-using Microsoft.AspNetCore.Http;
+using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventExplorer.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]/")]
     public class LocationsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly LocationRepository _locationRepository;
         private readonly IMapper _mapper;
 
-        public LocationsController(ApplicationDbContext context, IMapper mapper)
+        public LocationsController(
+            LocationRepository locationRepository,
+            IMapper mapper
+            )
         {
-            _context = context;
+            _locationRepository = locationRepository;
             _mapper = mapper;
         }
 
@@ -29,7 +28,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetLocations()
         {
             var locations =
-                _context.Locations.ToList();
+                _locationRepository.GetLocations();
 
             var locationResponseResources =
                 _mapper.Map<IEnumerable<Location>, IEnumerable<LocationResponseResource>>(locations);
@@ -40,7 +39,8 @@ namespace EventExplorer.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetLocation(int id)
         {
-            var location = _context.Locations.SingleOrDefault(l => l.Id == id);
+            var location =
+                _locationRepository.GetLocation(id);
 
             if (location == null)
             {
@@ -61,12 +61,16 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var location = _mapper.Map<CreateLocationRequestResource, Location>(request);
+            var location =
+                _mapper.Map<CreateLocationRequestResource, Location>(request);
 
-            _context.Locations.Add(location);
-            _context.SaveChanges();
+            _locationRepository.Add(location);
 
-            var locationResponseResource = _mapper.Map<Location, LocationResponseResource>(location);
+            location =
+                _locationRepository.GetLocation(location.Id);
+
+            var locationResponseResource =
+                _mapper.Map<Location, LocationResponseResource>(location);
 
             return Ok(locationResponseResource);
         }
