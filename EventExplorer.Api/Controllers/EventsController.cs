@@ -2,17 +2,14 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence;
 using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EventExplorer.Api.Controllers
 {
-    [Route("api/[controller]/")]
     [ApiController]
+    [Route("api/[controller]/")]
     public class EventsController : ControllerBase
     {
         private readonly EventRepository _eventRepository;
@@ -44,7 +41,7 @@ namespace EventExplorer.Api.Controllers
         {
             var @event =
                 _eventRepository.GetEvent(id);
-                
+
             if (@event == null)
             {
                 return NotFound("Event not found with id: " + id);
@@ -64,13 +61,16 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var @event = _mapper.Map<CreateEventRequestResource, Event>(request);
+            var @event =
+                _mapper.Map<CreateEventRequestResource, Event>(request);
 
             _eventRepository.Add(@event);
 
-            @event = _eventRepository.GetEvent(@event.Id);
+            @event =
+                _eventRepository.GetEvent(@event.Id);
 
-            var eventResponseResource = _mapper.Map<Event, EventResponseResource>(@event);
+            var eventResponseResource =
+                _mapper.Map<Event, EventResponseResource>(@event);
 
             return Ok(eventResponseResource);
         }

@@ -24,12 +24,10 @@ namespace EventExplorer.Api.Persistence.Repositories
                 .SingleOrDefault(category => category.Id == id);
         }
 
-        public Category Add(Category category)
+        public void Add(Category category)
         {
-            var addedCategory = _context.Categories.Add(category);
+            _context.Categories.Add(category);
             _context.SaveChanges();
-
-            return addedCategory.Entity;
         }
     }
 }

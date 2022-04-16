@@ -64,8 +64,10 @@ namespace EventExplorer.Api.Controllers
             var category =
                 _mapper.Map<CreateCategoryRequestResource, Category>(request);
 
+            _categoryRepository.Add(category);
+
             category =
-                _categoryRepository.Add(category);
+                _categoryRepository.GetCategory(category.Id);
 
             var categoryResponseResource =
                 _mapper.Map<Category, CategoryResponseResource>(category);
