@@ -29,6 +29,7 @@ namespace EventExplorer.Api
             services.AddAutoMapper();
 
             services.AddScoped<CategoryService>();
+            services.AddScoped<EventService>();
 
             services.AddScoped<CategoryRepository>();
             services.AddScoped<LocationRepository>();

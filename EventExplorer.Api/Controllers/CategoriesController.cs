@@ -2,7 +2,6 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence.Repositories;
 using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
