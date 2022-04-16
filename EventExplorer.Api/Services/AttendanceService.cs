@@ -12,6 +12,11 @@ namespace EventExplorer.Api.Services
             _attendanceRepository = attendanceRepository;
         }
 
+        public Attendance GetAttendance(int eventId, int userId)
+        {
+            return _attendanceRepository.GetAttendance(eventId, userId);
+        }
+
         public void Add(Attendance attendance)
         {
             _attendanceRepository.Add(attendance);

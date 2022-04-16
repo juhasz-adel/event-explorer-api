@@ -1,4 +1,6 @@
 ﻿using EventExplorer.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace EventExplorer.Api.Persistence.Repositories
 {
@@ -9,6 +11,16 @@ namespace EventExplorer.Api.Persistence.Repositories
         public AttendanceRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public Attendance GetAttendance(int eventId, int userId)
+        {
+            return _context.Attendances
+                .Include(attendance => attendance.User)
+                .Include(attendance => attendance.Event)
+                .ThenInclude(@event => @event.Organizer)
+                .SingleOrDefault(attendance => attendance.EventId == eventId &&
+                    attendance.UserId == userId);
         }
 
         public void Add(Attendance attendance)

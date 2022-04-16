@@ -10,6 +10,7 @@ namespace EventExplorer.Api.Controllers.Mapping
         public MappingProfile()
         {
             // Model to response resource
+            CreateMap<Attendance, AttendanceResponseResource>();
             CreateMap<Category, CategoryResponseResource>();
             CreateMap<Event, EventResponseResource>();
             CreateMap<Location, LocationResponseResource>();

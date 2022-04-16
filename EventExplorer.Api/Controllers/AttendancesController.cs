@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EventExplorer.Api.Controllers.Resources.Requests;
+using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -38,8 +39,11 @@ namespace EventExplorer.Api.Controllers
 
                 _attendanceService.Add(attendance);
 
+                attendance =
+                    _attendanceService.GetAttendance(attendance.EventId, attendance.UserId);
+
                 var attendanceResponseResource =
-                    _mapper.Map<Attendance, AttendanceRequestResource>(attendance);
+                    _mapper.Map<Attendance, AttendanceResponseResource>(attendance);
 
                 return Ok(attendanceResponseResource);
             }
