@@ -28,11 +28,14 @@ namespace EventExplorer.Api
 
             services.AddAutoMapper();
 
+            services.AddScoped<AttendanceService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<EventService>();
             services.AddScoped<LocationService>();
             services.AddScoped<OrganizerService>();
+            services.AddScoped<UserService>();
 
+            services.AddScoped<AttendanceRepository>();
             services.AddScoped<CategoryRepository>();
             services.AddScoped<LocationRepository>();
             services.AddScoped<EventRepository>();

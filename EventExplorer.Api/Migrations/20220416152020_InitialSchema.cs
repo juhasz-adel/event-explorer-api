@@ -111,8 +111,7 @@ namespace EventExplorer.Api.Migrations
                 columns: table => new
                 {
                     event_id = table.Column<int>(type: "int", nullable: false),
-                    user_id = table.Column<int>(type: "int", nullable: false),
-                    is_pre_paid = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    user_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
