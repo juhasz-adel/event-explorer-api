@@ -2,27 +2,25 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence;
-using Microsoft.AspNetCore.Http;
+using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventExplorer.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]/")]
     public class EventsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly EventRepository _eventRepository;
         private readonly IMapper _mapper;
 
-        public EventsController(ApplicationDbContext context, IMapper mapper)
+        public EventsController(
+            EventRepository eventRepository,
+            IMapper mapper
+            )
         {
-            _context = context;
+            _eventRepository = eventRepository;
             _mapper = mapper;
         }
 
@@ -30,11 +28,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetEvents()
         {
             var events =
-                _context.Events
-                .Include(e => e.Organizer)
-                .Include(e => e.Category)
-                .Include(e => e.Location)
-                .ToList();
+                _eventRepository.GetEvents();
 
             var eventResponseResources =
                 _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
@@ -46,11 +40,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetEvent(int id)
         {
             var @event =
-                _context.Events
-                .Include(e => e.Organizer)
-                .Include(e => e.Category)
-                .Include(e => e.Location)
-                .SingleOrDefault(e => e.Id == id);
+                _eventRepository.GetEvent(id);
 
             if (@event == null)
             {
@@ -71,18 +61,16 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var @event = _mapper.Map<CreateEventRequestResource, Event>(request);
+            var @event =
+                _mapper.Map<CreateEventRequestResource, Event>(request);
 
-            _context.Events.Add(@event);
-            _context.SaveChanges();
+            _eventRepository.Add(@event);
 
-            @event = _context.Events
-                .Include(e => e.Organizer)
-                .Include(e => e.Category)
-                .Include(e => e.Location)
-                .SingleOrDefault(e => e.Id == @event.Id);
+            @event =
+                _eventRepository.GetEvent(@event.Id);
 
-            var eventResponseResource = _mapper.Map<Event, EventResponseResource>(@event);
+            var eventResponseResource =
+                _mapper.Map<Event, EventResponseResource>(@event);
 
             return Ok(eventResponseResource);
         }
