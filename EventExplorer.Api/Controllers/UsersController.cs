@@ -2,19 +2,14 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence;
 using EventExplorer.Api.Persistence.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventExplorer.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]/")]
     public class UsersController : ControllerBase
     {
         private readonly UserRepository _userRepository;
@@ -23,7 +18,7 @@ namespace EventExplorer.Api.Controllers
         public UsersController(
             UserRepository userRepository,
             IMapper mapper
-            )
+        )
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -72,7 +67,7 @@ namespace EventExplorer.Api.Controllers
             _userRepository.Add(user);
 
             user =
-                _userRepository.GetUser(user.Id);
+               _userRepository.GetUser(user.Id);
 
             var userResponseResource =
                 _mapper.Map<User, UserResponseResource>(user);

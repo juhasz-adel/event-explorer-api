@@ -2,11 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence;
 using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EventExplorer.Api.Controllers
 {
@@ -20,7 +18,7 @@ namespace EventExplorer.Api.Controllers
         public OrganizersController(
             OrganizerRepository organizerRepository,
             IMapper mapper
-            )
+        )
         {
             _organizerRepository = organizerRepository;
             _mapper = mapper;
