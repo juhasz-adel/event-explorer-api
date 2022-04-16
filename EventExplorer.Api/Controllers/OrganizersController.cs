@@ -3,22 +3,26 @@ using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence;
+using EventExplorer.Api.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace EventExplorer.Api.Controllers
 {
-    [Route("api/[controller]/")]
     [ApiController]
+    [Route("api/[controller]/")]
     public class OrganizersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OrganizerRepository _organizerRepository;
         private readonly IMapper _mapper;
 
-        public OrganizersController(ApplicationDbContext context, IMapper mapper)
+        public OrganizersController(
+            OrganizerRepository organizerRepository,
+            IMapper mapper
+            )
         {
-            _context = context;
+            _organizerRepository = organizerRepository;
             _mapper = mapper;
         }
 
@@ -26,7 +30,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetOrganizers()
         {
             var organizers =
-                _context.Organizers.ToList();
+                _organizerRepository.GetOrganizers();
 
             var organizerResponseResources =
                 _mapper.Map<IEnumerable<Organizer>, IEnumerable<OrganizerResponseResource>>(organizers);
@@ -38,16 +42,15 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetOrganizer(int id)
         {
             var organizer =
-                _context.Organizers
-                .SingleOrDefault(o => o.Id == id);
+                _organizerRepository.GetOrganizer(id);
 
             if (organizer == null)
             {
-                return NotFound("Organizer not found with id: " + id);
+                return NotFound("Oragnizer not found with id: " + id);
             }
 
             var organizerResponseResource =
-                _mapper.Map<Organizer, CategoryResponseResource>(organizer);
+                _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
 
             return Ok(organizerResponseResource);
         }
@@ -60,12 +63,16 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var organizer = _mapper.Map<CreateOrganizerRequestResource, Organizer>(request);
+            var organizer =
+                _mapper.Map<CreateOrganizerRequestResource, Organizer>(request);
 
-            _context.Organizers.Add(organizer);
-            _context.SaveChanges();
+            _organizerRepository.Add(organizer);
 
-            var organizerResponseResource = _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
+            organizer =
+                _organizerRepository.GetOrganizer(organizer.Id);
+
+            var organizerResponseResource =
+                _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
 
             return Ok(organizerResponseResource);
         }
