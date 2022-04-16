@@ -2,8 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence.Repositories;
+using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace EventExplorer.Api.Controllers
@@ -12,15 +13,15 @@ namespace EventExplorer.Api.Controllers
     [Route("api/[controller]/")]
     public class UsersController : ControllerBase
     {
-        private readonly UserRepository _userRepository;
+        private readonly UserService _userService;
         private readonly IMapper _mapper;
 
         public UsersController(
-            UserRepository userRepository,
+            UserService userService,
             IMapper mapper
         )
         {
-            _userRepository = userRepository;
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetUsers()
         {
             var users =
-                _userRepository.GetUsers();
+                _userService.GetUsers();
 
             var userResponseResources =
                 _mapper.Map<IEnumerable<User>, IEnumerable<UserResponseResource>>(users);
@@ -39,18 +40,20 @@ namespace EventExplorer.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetUser(int id)
         {
-            var user =
-                _userRepository.GetUser(id);
-
-            if (user == null)
+            try
             {
-                return NotFound("User not found with id: " + id);
+                var user =
+                    _userService.GetUser(id);
+
+                var userResponseResource =
+                    _mapper.Map<User, UserResponseResource>(user);
+
+                return Ok(userResponseResource);
             }
-
-            var userResponseResource =
-                _mapper.Map<User, UserResponseResource>(user);
-
-            return Ok(userResponseResource);
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
 
         [HttpPost]
@@ -61,18 +64,25 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user =
-                _mapper.Map<CreateUserRequestResource, User>(request);
+            try
+            {
+                var user =
+                    _mapper.Map<CreateUserRequestResource, User>(request);
 
-            _userRepository.Add(user);
+                _userService.Add(user);
 
-            user =
-               _userRepository.GetUser(user.Id);
+                user =
+                    _userService.GetUser(user.Id);
 
-            var userResponseResource =
-                _mapper.Map<User, UserResponseResource>(user);
+                var userResponseResource =
+                    _mapper.Map<User, UserResponseResource>(user);
 
-            return Ok(userResponseResource);
+                return Ok(userResponseResource);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }

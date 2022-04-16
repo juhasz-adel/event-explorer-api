@@ -2,8 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence.Repositories;
+using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace EventExplorer.Api.Controllers
@@ -12,15 +13,15 @@ namespace EventExplorer.Api.Controllers
     [Route("api/[controller]/")]
     public class OrganizersController : ControllerBase
     {
-        private readonly OrganizerRepository _organizerRepository;
+        private readonly OrganizerService _organizerService;
         private readonly IMapper _mapper;
 
         public OrganizersController(
-            OrganizerRepository organizerRepository,
+            OrganizerService organizerService,
             IMapper mapper
         )
         {
-            _organizerRepository = organizerRepository;
+            _organizerService = organizerService;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetOrganizers()
         {
             var organizers =
-                _organizerRepository.GetOrganizers();
+                _organizerService.GetOrganizers();
 
             var organizerResponseResources =
                 _mapper.Map<IEnumerable<Organizer>, IEnumerable<OrganizerResponseResource>>(organizers);
@@ -39,18 +40,20 @@ namespace EventExplorer.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetOrganizer(int id)
         {
-            var organizer =
-                _organizerRepository.GetOrganizer(id);
-
-            if (organizer == null)
+            try
             {
-                return NotFound("Oragnizer not found with id: " + id);
+                var organizer =
+                        _organizerService.GetOrganizer(id);
+
+                var organizerResponseResource =
+                    _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
+
+                return Ok(organizerResponseResource);
             }
-
-            var organizerResponseResource =
-                _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
-
-            return Ok(organizerResponseResource);
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
 
         [HttpPost]
@@ -61,18 +64,25 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var organizer =
-                _mapper.Map<CreateOrganizerRequestResource, Organizer>(request);
+            try
+            {
+                var organizer =
+                        _mapper.Map<CreateOrganizerRequestResource, Organizer>(request);
 
-            _organizerRepository.Add(organizer);
+                _organizerService.Add(organizer);
 
-            organizer =
-                _organizerRepository.GetOrganizer(organizer.Id);
+                organizer =
+                    _organizerService.GetOrganizer(organizer.Id);
 
-            var organizerResponseResource =
-                _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
+                var organizerResponseResource =
+                    _mapper.Map<Organizer, OrganizerResponseResource>(organizer);
 
-            return Ok(organizerResponseResource);
+                return Ok(organizerResponseResource);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }

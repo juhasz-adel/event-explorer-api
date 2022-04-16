@@ -2,8 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence.Repositories;
+using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace EventExplorer.Api.Controllers
@@ -12,15 +13,15 @@ namespace EventExplorer.Api.Controllers
     [Route("api/[controller]/")]
     public class EventsController : ControllerBase
     {
-        private readonly EventRepository _eventRepository;
+        private readonly EventService _eventService;
         private readonly IMapper _mapper;
 
         public EventsController(
-            EventRepository eventRepository,
+            EventService eventService,
             IMapper mapper
-            )
+        )
         {
-            _eventRepository = eventRepository;
+            _eventService = eventService;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetEvents()
         {
             var events =
-                _eventRepository.GetEvents();
+                _eventService.GetEvents();
 
             var eventResponseResources =
                 _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
@@ -39,18 +40,20 @@ namespace EventExplorer.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetEvent(int id)
         {
-            var @event =
-                _eventRepository.GetEvent(id);
-
-            if (@event == null)
+            try
             {
-                return NotFound("Event not found with id: " + id);
+                var @event =
+                        _eventService.GetEvent(id);
+
+                var eventResponseResource =
+                    _mapper.Map<Event, EventResponseResource>(@event);
+
+                return Ok(eventResponseResource);
             }
-
-            var eventResponseResource =
-                _mapper.Map<Event, EventResponseResource>(@event);
-
-            return Ok(eventResponseResource);
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
 
         [HttpPost]
@@ -61,18 +64,25 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var @event =
-                _mapper.Map<CreateEventRequestResource, Event>(request);
+            try
+            {
+                var @event =
+                        _mapper.Map<CreateEventRequestResource, Event>(request);
 
-            _eventRepository.Add(@event);
+                _eventService.Add(@event);
 
-            @event =
-                _eventRepository.GetEvent(@event.Id);
+                @event =
+                    _eventService.GetEvent(@event.Id);
 
-            var eventResponseResource =
-                _mapper.Map<Event, EventResponseResource>(@event);
+                var eventResponseResource =
+                    _mapper.Map<Event, EventResponseResource>(@event);
 
-            return Ok(eventResponseResource);
+                return Ok(eventResponseResource);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }

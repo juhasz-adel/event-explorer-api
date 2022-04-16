@@ -2,8 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence.Repositories;
+using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace EventExplorer.Api.Controllers
@@ -12,15 +13,15 @@ namespace EventExplorer.Api.Controllers
     [Route("api/[controller]/")]
     public class LocationsController : ControllerBase
     {
-        private readonly LocationRepository _locationRepository;
+        private readonly LocationService _locationService;
         private readonly IMapper _mapper;
 
         public LocationsController(
-            LocationRepository locationRepository,
+            LocationService locationService,
             IMapper mapper
-            )
+        )
         {
-            _locationRepository = locationRepository;
+            _locationService = locationService;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetLocations()
         {
             var locations =
-                _locationRepository.GetLocations();
+                _locationService.GetLocations();
 
             var locationResponseResources =
                 _mapper.Map<IEnumerable<Location>, IEnumerable<LocationResponseResource>>(locations);
@@ -39,18 +40,20 @@ namespace EventExplorer.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetLocation(int id)
         {
-            var location =
-                _locationRepository.GetLocation(id);
-
-            if (location == null)
+            try
             {
-                return NotFound("Location not found with id: " + id);
+                var location =
+                        _locationService.GetLocation(id);
+
+                var locationResponseResource =
+                    _mapper.Map<Location, LocationResponseResource>(location);
+
+                return Ok(locationResponseResource);
             }
-
-            var locationResponseResource =
-                _mapper.Map<Location, LocationResponseResource>(location);
-
-            return Ok(locationResponseResource);
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
 
         [HttpPost]
@@ -61,18 +64,25 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var location =
-                _mapper.Map<CreateLocationRequestResource, Location>(request);
+            try
+            {
+                var location =
+                    _mapper.Map<CreateLocationRequestResource, Location>(request);
 
-            _locationRepository.Add(location);
+                _locationService.Add(location);
 
-            location =
-                _locationRepository.GetLocation(location.Id);
+                location =
+                    _locationService.GetLocation(location.Id);
 
-            var locationResponseResource =
-                _mapper.Map<Location, LocationResponseResource>(location);
+                var locationResponseResource =
+                    _mapper.Map<Location, LocationResponseResource>(location);
 
-            return Ok(locationResponseResource);
+                return Ok(locationResponseResource);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }

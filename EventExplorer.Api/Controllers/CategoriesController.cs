@@ -2,8 +2,9 @@
 using EventExplorer.Api.Controllers.Resources.Requests;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
-using EventExplorer.Api.Persistence.Repositories;
+using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace EventExplorer.Api.Controllers
@@ -12,15 +13,15 @@ namespace EventExplorer.Api.Controllers
     [Route("/api/[controller]/")]
     public class CategoriesController : ControllerBase
     {
-        private readonly CategoryRepository _categoryRepository;
+        private readonly CategoryService _categoryService;
         private readonly IMapper _mapper;
 
         public CategoriesController(
-            CategoryRepository categoryRepository,
+            CategoryService categoryService,
             IMapper mapper
-            )
+        )
         {
-            _categoryRepository = categoryRepository;
+            _categoryService = categoryService;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace EventExplorer.Api.Controllers
         public IActionResult GetCategories()
         {
             var categories =
-                _categoryRepository.GetCategories();
+                _categoryService.GetCategories();
 
             var categoryResponseResources =
                 _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResponseResource>>(categories);
@@ -39,18 +40,20 @@ namespace EventExplorer.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetCategory(int id)
         {
-            var category =
-                _categoryRepository.GetCategory(id);
-
-            if (category == null)
+            try
             {
-                return NotFound("Category not found with id: " + id);
+                var category =
+                    _categoryService.GetCategory(id);
+
+                var categoryResponseResource =
+                   _mapper.Map<Category, CategoryResponseResource>(category);
+
+                return Ok(categoryResponseResource);
             }
-
-            var categoryResponseResource =
-                _mapper.Map<Category, CategoryResponseResource>(category);
-
-            return Ok(categoryResponseResource);
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
 
         [HttpPost]
@@ -61,18 +64,25 @@ namespace EventExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var category =
-                _mapper.Map<CreateCategoryRequestResource, Category>(request);
+            try
+            {
+                var category =
+                    _mapper.Map<CreateCategoryRequestResource, Category>(request);
 
-            _categoryRepository.Add(category);
+                _categoryService.Add(category);
 
-            category =
-                _categoryRepository.GetCategory(category.Id);
+                category =
+                    _categoryService.GetCategory(category.Id);
 
-            var categoryResponseResource =
-                _mapper.Map<Category, CategoryResponseResource>(category);
+                var categoryResponseResource =
+                    _mapper.Map<Category, CategoryResponseResource>(category);
 
-            return Ok(categoryResponseResource);
+                return Ok(categoryResponseResource);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }

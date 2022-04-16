@@ -1,6 +1,7 @@
 using AutoMapper;
 using EventExplorer.Api.Persistence;
 using EventExplorer.Api.Persistence.Repositories;
+using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,11 @@ namespace EventExplorer.Api
             services.AddControllers();
 
             services.AddAutoMapper();
+
+            services.AddScoped<CategoryService>();
+            services.AddScoped<EventService>();
+            services.AddScoped<LocationService>();
+            services.AddScoped<OrganizerService>();
 
             services.AddScoped<CategoryRepository>();
             services.AddScoped<LocationRepository>();
