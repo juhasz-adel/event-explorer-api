@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Cors;
 namespace EventExplorer.Api.Controllers
 {
     [ApiController]
-    [Route("api/user/{userId:int}/events/")]
+    [Route("api/users/{userId:int}/events/")]
     [EnableCors("CORS")]
     public class UserEventsController : ControllerBase
     {
