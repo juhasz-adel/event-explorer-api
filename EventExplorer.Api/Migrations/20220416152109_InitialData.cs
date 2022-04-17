@@ -47,10 +47,14 @@ namespace EventExplorer.Api.Migrations
             migrationBuilder.Sql("INSERT INTO events (organizer_id, category_id, name, start_date, end_date, location_id, entrance_fee, is_indoor) VALUES ((SELECT id FROM organizers WHERE name = 'AButik'), (SELECT id FROM categories WHERE name = 'Szabadtéri program'), 'Gardróbvásár', '2022-09-14 10:00:00', '2022-09-14 13:30:00', (SELECT id FROM locations WHERE name = 'Anita Butik Divatház'), 0, 0);");
             migrationBuilder.Sql("INSERT INTO events (organizer_id, category_id, name, start_date, end_date, location_id, entrance_fee, is_indoor) VALUES ((SELECT id FROM organizers WHERE name = 'MH'), (SELECT id FROM categories WHERE name = 'Koncert'), 'Szimfónikus koncert', '2022-10-01 14:30:00', '2022-10-01 17:30:00', (SELECT id FROM locations WHERE name = 'Művészetek háza'), 1000, 1);");
             migrationBuilder.Sql("INSERT INTO events (organizer_id, category_id, name, start_date, end_date, location_id, entrance_fee, is_indoor) VALUES ((SELECT id FROM organizers WHERE name = 'MoziVilág'), (SELECT id FROM categories WHERE name = 'Mozi'), 'MineCinema', '2022-10-02 16:00:00', '2022-10-02 18:30:00', (SELECT id FROM locations WHERE name = 'Ady Endre Központ'), 2500, 1);");
+
+            migrationBuilder.Sql("INSERT INTO users (email, password, first_name, last_name, birth_date) VALUES ('juhasz.adel@gmail.com', '12345', 'Adél', 'Juhász', '2001-06-03 00:00:00');");
+            migrationBuilder.Sql("INSERT INTO users (email, password, first_name, last_name, birth_date) VALUES ('racz.nikoletta@gamil.com', '123456', 'Nikoletta', 'Rácz', '2001-07-13 00:00:00');");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("DELETE FROM users;");
             migrationBuilder.Sql("DELETE FROM events;");
             migrationBuilder.Sql("DELETE FROM locations;");
             migrationBuilder.Sql("DELETE FROM organizers;");
