@@ -5,11 +5,13 @@ using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Cors;
 
 namespace EventExplorer.Api.Controllers
 {
     [ApiController]
     [Route("api/user/{userId:int}/events/")]
+    [EnableCors("CORS")]
     public class UserEventsController : ControllerBase
     {
         private readonly AttendanceService _attendanceService;
