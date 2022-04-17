@@ -24,6 +24,16 @@ namespace EventExplorer.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CORS", builder =>
+                {
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
+                });
+            });
+
             services.AddControllers();
 
             services.AddAutoMapper();
@@ -47,7 +57,7 @@ namespace EventExplorer.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "EventExplorer.Api", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventExplorer.Api", Version = "v1" });
             });
         }
 
@@ -64,6 +74,8 @@ namespace EventExplorer.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CORS");
 
             app.UseAuthorization();
 
