@@ -51,7 +51,7 @@ namespace EventExplorer.Api.Controllers
             }
             catch (Exception exception)
             {
-                return NotFound(exception.Message);
+                return BadRequest(exception.Message);
             }
         }
     }
