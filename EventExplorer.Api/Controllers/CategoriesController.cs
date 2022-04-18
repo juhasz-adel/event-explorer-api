@@ -48,7 +48,7 @@ namespace EventExplorer.Api.Controllers
                     _categoryService.GetCategory(id);
 
                 var categoryResponseResource =
-                   _mapper.Map<Category, CategoryResponseResource>(category);
+                    _mapper.Map<Category, CategoryResponseResource>(category);
 
                 return Ok(categoryResponseResource);
             }

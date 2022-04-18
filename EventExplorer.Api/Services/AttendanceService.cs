@@ -22,6 +22,7 @@ namespace EventExplorer.Api.Services
             return attendances
                 .Select(attendance => attendance.Event)
                 .Where(@event => @event.StartDate.Month == DateTime.Now.Month)
+                .OrderBy(@event => @event.StartDate)
                 .ToList();
         }
 
@@ -32,6 +33,7 @@ namespace EventExplorer.Api.Services
             return attendances
                 .Select(attendance => attendance.Event)
                 .Where(@event => @event.StartDate.Month != DateTime.Now.Month)
+                .OrderBy(@event => @event.StartDate)
                 .ToList();
         }
 
