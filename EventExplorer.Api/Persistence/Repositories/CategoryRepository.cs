@@ -23,6 +23,11 @@ namespace EventExplorer.Api.Persistence.Repositories
         {
             return _context.Categories
                 .Include(category => category.Events)
+                .ThenInclude(@event => @event.Organizer)
+                .Include(category => category.Events)
+                .ThenInclude(@event => @event.Location)
+                .Include(category => category.Events)
+                .ThenInclude(@event => @event.Category)
                 .SingleOrDefault(category => category.Id == id);
         }
 
