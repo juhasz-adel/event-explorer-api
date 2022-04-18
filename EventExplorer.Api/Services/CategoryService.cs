@@ -19,18 +19,6 @@ namespace EventExplorer.Api.Services
             return _categoryRepository.GetCategories();
         }
 
-        public IEnumerable<Event> GetEvents(int categoryId)
-        {
-            var category = _categoryRepository.GetCategory(categoryId);
-
-            if (category is null)
-            {
-                throw new CategoryNotFoundException(categoryId);
-            }
-
-            return category.Events;
-        }
-
         public Category GetCategory(int id)
         {
             var category = _categoryRepository.GetCategory(id);

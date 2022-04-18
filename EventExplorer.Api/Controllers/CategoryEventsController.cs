@@ -14,35 +14,28 @@ namespace EventExplorer.Api.Controllers
     [EnableCors("CORS")]
     public class CategoryEventsController : ControllerBase
     {
-        private readonly CategoryService _categoryService;
+        private readonly EventService _eventService;
         private readonly IMapper _mapper;
 
         public CategoryEventsController(
-            CategoryService categoryService,
+            EventService eventService,
             IMapper mapper
         )
         {
-            _categoryService = categoryService;
+            _eventService = eventService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetCategoryEvents(int id)
         {
-            try
-            {
-                var events =
-                    _categoryService.GetEvents(id);
+            var events =
+                _eventService.GetEvents(id);
 
-                var eventResponseResources =
-                    _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
+            var eventResponseResources =
+                _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
 
-                return Ok(eventResponseResources);
-            }
-            catch (Exception exception)
-            {
-                return NotFound(exception.Message);
-            }
+            return Ok(eventResponseResources);
         }
     }
 }

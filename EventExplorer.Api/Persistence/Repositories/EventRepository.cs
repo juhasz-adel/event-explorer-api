@@ -20,6 +20,7 @@ namespace EventExplorer.Api.Persistence.Repositories
                 .Include(@event => @event.Organizer)
                 .Include(@event => @event.Category)
                 .Include(@event => @event.Location)
+                .OrderBy(@event => @event.StartDate)
                 .ToList();
         }
 
@@ -29,7 +30,7 @@ namespace EventExplorer.Api.Persistence.Repositories
                 .Include(@event => @event.Organizer)
                 .Include(@event => @event.Category)
                 .Include(@event => @event.Location)
-                .SingleOrDefault(e => e.Id == id);
+                .SingleOrDefault(@event => @event.Id == id);
         }
 
         public void Add(Event @event)
