@@ -1,4 +1,5 @@
-﻿using EventExplorer.Api.Models;
+﻿using System;
+using EventExplorer.Api.Models;
 using EventExplorer.Api.Persistence.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,21 +17,21 @@ namespace EventExplorer.Api.Services
 
         public IEnumerable<Event> GetUpcomingUserEvents(int userId)
         {
-            // TODO: szűrés ehavi eseményekre..
             var attendances = _attendanceRepository.GetAttendances(userId);
 
             return attendances
                 .Select(attendance => attendance.Event)
+                .Where(@event => @event.StartDate.Month == DateTime.Now.Month)
                 .ToList();
         }
 
         public IEnumerable<Event> GetFurtherUserEvents(int userId)
         {
-            // TODO: szűrés nem ehavi eseményekre..
             var attendances = _attendanceRepository.GetAttendances(userId);
 
             return attendances
                 .Select(attendance => attendance.Event)
+                .Where(@event => @event.StartDate.Month != DateTime.Now.Month)
                 .ToList();
         }
 
