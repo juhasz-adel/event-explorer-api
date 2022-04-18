@@ -14,8 +14,19 @@ namespace EventExplorer.Api.Services
             _attendanceRepository = attendanceRepository;
         }
 
-        public IEnumerable<Event> GetUserEvents(int userId)
+        public IEnumerable<Event> GetUpcomingUserEvents(int userId)
         {
+            // TODO: szűrés ehavi eseményekre..
+            var attendances = _attendanceRepository.GetAttendances(userId);
+
+            return attendances
+                .Select(attendance => attendance.Event)
+                .ToList();
+        }
+
+        public IEnumerable<Event> GetFurtherUserEvents(int userId)
+        {
+            // TODO: szűrés nem ehavi eseményekre..
             var attendances = _attendanceRepository.GetAttendances(userId);
 
             return attendances

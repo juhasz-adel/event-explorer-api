@@ -5,6 +5,7 @@ using EventExplorer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using EventExplorer.Api.Controllers.Resources.Queries;
 using Microsoft.AspNetCore.Cors;
 
 namespace EventExplorer.Api.Controllers
@@ -27,12 +28,13 @@ namespace EventExplorer.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUserEvents(int userId)
+        public IActionResult GetUpcomingUserEvents(int userId, [FromQuery] EventFilterQuery query)
         {
             try
             {
-                var events =
-                    _attendanceService.GetUserEvents(userId);
+                var events = query.IsUpcoming
+                    ? _attendanceService.GetUpcomingUserEvents(userId)
+                    : _attendanceService.GetFurtherUserEvents(userId);
 
                 var eventResponseResources =
                     _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
