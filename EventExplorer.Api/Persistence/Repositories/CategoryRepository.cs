@@ -1,6 +1,7 @@
 ﻿using EventExplorer.Api.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventExplorer.Api.Persistence.Repositories
 {
@@ -21,6 +22,7 @@ namespace EventExplorer.Api.Persistence.Repositories
         public Category GetCategory(int id)
         {
             return _context.Categories
+                .Include(category => category.Events)
                 .SingleOrDefault(category => category.Id == id);
         }
 

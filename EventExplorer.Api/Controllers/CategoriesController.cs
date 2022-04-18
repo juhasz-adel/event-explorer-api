@@ -39,25 +39,6 @@ namespace EventExplorer.Api.Controllers
             return Ok(categoryResponseResources);
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult GetCategory(int id)
-        {
-            try
-            {
-                var category =
-                    _categoryService.GetCategory(id);
-
-                var categoryResponseResource =
-                   _mapper.Map<Category, CategoryResponseResource>(category);
-
-                return Ok(categoryResponseResource);
-            }
-            catch (Exception exception)
-            {
-                return NotFound(exception.Message);
-            }
-        }
-
         [HttpPost]
         public IActionResult CreateCategory([FromBody] CreateCategoryRequestResource request)
         {

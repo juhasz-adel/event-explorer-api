@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using EventExplorer.Api.Controllers.Resources.Responses;
 using EventExplorer.Api.Models;
@@ -13,28 +14,35 @@ namespace EventExplorer.Api.Controllers
     [EnableCors("CORS")]
     public class CategoryEventsController : ControllerBase
     {
-        private readonly EventService _eventService;
+        private readonly CategoryService _categoryService;
         private readonly IMapper _mapper;
 
         public CategoryEventsController(
-            EventService eventService,
+            CategoryService categoryService,
             IMapper mapper
         )
         {
-            _eventService = eventService;
+            _categoryService = categoryService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult GetEvents(int id)
+        public IActionResult GetCategoryEvents(int id)
         {
-            var events =
-                _eventService.GetEvents(id);
+            try
+            {
+                var events =
+                    _categoryService.GetEvents(id);
 
-            var eventResponseResources =
-                _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
+                var eventResponseResources =
+                    _mapper.Map<IEnumerable<Event>, IEnumerable<EventResponseResource>>(events);
 
-            return Ok(eventResponseResources);
+                return Ok(eventResponseResources);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }

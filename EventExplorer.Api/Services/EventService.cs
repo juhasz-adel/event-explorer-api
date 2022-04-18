@@ -2,7 +2,6 @@
 using EventExplorer.Api.Persistence.Repositories;
 using EventExplorer.Api.Services.Exceptions;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EventExplorer.Api.Services
 {
@@ -18,15 +17,6 @@ namespace EventExplorer.Api.Services
         public IEnumerable<Event> GetEvents()
         {
             return _eventRepository.GetEvents();
-        }
-
-        public IEnumerable<Event> GetEvents(int categoryId)
-        {
-            var events = _eventRepository.GetEvents();
-
-            return events
-                .Where(@event => @event.CategoryId == categoryId)
-                .ToList();
         }
 
         public Event GetEvent(int id)
